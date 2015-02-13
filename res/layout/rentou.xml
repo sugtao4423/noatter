@@ -21,8 +21,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
-        android:ems="10"
-        android:text="@string/rentou_moji" >
+        android:ems="10" >
 
         <requestFocus />
     </EditText>
@@ -43,7 +42,6 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
         android:ems="10"
-        android:hint="1"
         android:inputType="phone" />
 
     <TextView
@@ -63,7 +61,6 @@
         android:layout_alignBottom="@+id/textView3"
         android:layout_toRightOf="@+id/textView3"
         android:ems="10"
-        android:hint="10"
         android:inputType="phone" />
 
     <TextView

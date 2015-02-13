@@ -2,15 +2,13 @@
 <resources>
 
     <string name="app_name">のあったー</string>
-    <string name="action_settings">OAuth認証</string>
-    <string name="noa_ID">\@sarasty_noah</string>
-    <string name="homo">\@flum_</string>
+    <string name="oauth">OAuth認証</string>
     <string-array name="spinner">
         <item >attack</item>
         <item >heal</item>
         <item >state</item>
         <item >start</item>
     </string-array>
-    <string name="rentou_moji">\@sarasty_noah attack @</string>
+    <string name="setting">設定</string>
 
 </resources>

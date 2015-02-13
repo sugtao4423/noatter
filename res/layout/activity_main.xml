@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/textView1"
-        android:ems="10"
-        android:text="@string/noa_ID" >
+        android:ems="10" >
 
         <requestFocus />
     </EditText>
@@ -42,8 +41,7 @@
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"
         android:layout_toRightOf="@+id/textView2"
-        android:ems="10"
-        android:text="@string/homo" />
+        android:ems="10" />
 
     <Spinner
         android:id="@+id/spinner1"
@@ -79,8 +77,7 @@
         android:layout_alignBaseline="@+id/textView3"
         android:layout_alignBottom="@+id/textView3"
         android:layout_toRightOf="@+id/textView3"
-        android:ems="10"
-        android:hint="のあちゃんに攻撃" />
+        android:ems="10" />
 
     <Button
         android:id="@+id/button2"

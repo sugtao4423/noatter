@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <CheckBoxPreference android:title="デフォルト設定" android:summaryOff="デフォルト設定はオフです" android:summaryOn="デフォルト設定はオンです" android:key="enable_default" android:defaultValue="true"/><PreferenceCategory android:title="デフォルト設定 - メイン画面">
+        <EditTextPreference android:title="コマンド送信先" android:negativeButtonText="キャンセル" android:key="sousin_saki" android:dialogMessage="コマンド送信先のデフォルト設定" android:dialogTitle="コマンド送信先" android:positiveButtonText="決定"/>
+        <EditTextPreference android:dialogMessage="攻撃先のデフォルト設定" android:dialogTitle="攻撃先" android:negativeButtonText="キャンセル" android:key="kougeki_saki" android:positiveButtonText="決定" android:title="攻撃先"/>
+        <EditTextPreference android:title="後ろにつける文章" android:negativeButtonText="キャンセル" android:key="back_letter" android:dialogMessage="後ろにつける文章のデフォルト" android:dialogTitle="後ろにつける文章" android:positiveButtonText="決定"/>
+        
+    </PreferenceCategory><PreferenceCategory android:title="デフォルト設定 - 連投画面">
+        <EditTextPreference android:title="文字列" android:negativeButtonText="キャンセル" android:key="rentou_letter" android:dialogMessage="文字列のデフォルト設定" android:dialogTitle="文字列" android:positiveButtonText="決定"/>
+        <EditTextPreference android:negativeButtonText="キャンセル" android:dialogMessage="繰り返しの最小値のデフォルト設定" android:dialogTitle="繰り返しの最小値" android:positiveButtonText="決定" android:title="繰り返しの最小値" android:key="rentou_min" android:inputType="number"/>
+        <EditTextPreference android:title="繰り返しの最大値" android:negativeButtonText="キャンセル" android:key="rentou_max" android:dialogMessage="繰り返しの最大値のデフォルト設定" android:dialogTitle="繰り返しの最大値" android:positiveButtonText="決定" android:inputType="number"/>
+    </PreferenceCategory>
+    
+    
+    
+
+</PreferenceScreen>

@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
 	static List<Status> mentions;
 	static String text, CK, CS;
 	static AccessToken accessToken;
+	static SharedPreferences pref;
 	
 	static Twitter twitter;
 	static TwitterFactory twitterFactory;
@@ -49,11 +50,25 @@ public class MainActivity extends Activity {
 		kougeki_saki = (EditText)findViewById(R.id.editText2);
 		backLetter = (EditText)findViewById(R.id.editText3);
 		spinner = (Spinner)findViewById(R.id.spinner1);
+		pref = PreferenceManager.getDefaultSharedPreferences(this);
+	}
+	
+	public void onResume(){
+		super.onResume();
+		//デフォルト有効
+		if(pref.getBoolean("enable_default", true)){
+			sousin_saki.setText("@sarasty_noah");
+			kougeki_saki.setHint("@flum_");
+			backLetter.setHint("のあちゃんに攻撃");
+		}else{ //無効
+			sousin_saki.setText(pref.getString("sousin_saki", ""));
+			kougeki_saki.setText(pref.getString("kougeki_saki", ""));
+			backLetter.setText(pref.getString("back_letter", ""));
+		}
 	}
 	
 	public void onStart(){
 		super.onStart();
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		if(pref.getString("AccessToken", "").equals("")){
 			startActivity(new Intent(this, OAuth.class));
 		}else{
@@ -142,6 +157,7 @@ public class MainActivity extends Activity {
 	private void mentionFinish(ListView list, ArrayList<String> arrayList){
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
 		list.setAdapter(adapter);
+		background(list);
 	}
 	
 	public void rentou(View v){
@@ -170,8 +186,11 @@ public class MainActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.oauth) {
 			startActivity(new Intent(this, OAuth.class));
+			return true;
+		}if (id == R.id.setting){
+			startActivity(new Intent(this, Preferences.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
