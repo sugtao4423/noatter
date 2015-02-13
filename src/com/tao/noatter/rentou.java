@@ -1,8 +1,6 @@
 package com.tao.noatter;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import android.app.Activity;
@@ -43,25 +41,30 @@ public class rentou extends Activity {
 	}
 	
 	public void mention(View v) throws InterruptedException{
-		Toast.makeText(this, "2秒お待ちください", Toast.LENGTH_SHORT).show();
 		final ListView list = (ListView)findViewById(R.id.listView1);
 		final ArrayList<String> arrayList = new ArrayList<String>();
-		AsyncTask<Void, Void, List<String>> task = new AsyncTask<Void, Void, List<String>>(){
+		AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>(){
 			@Override
-			protected List<String> doInBackground(Void... params) {
+			protected Boolean doInBackground(Void... params) {
 				try{
 				ResponseList<twitter4j.Status> mention = MainActivity.twitter.getMentionsTimeline(new Paging(1, 50));
-                for (twitter4j.Status status : mention) {
+                for (twitter4j.Status status : mention)
                     arrayList.add(status.getText());
-                }
+                return true;
 				}catch(Exception e){
 					Toast.makeText(getApplicationContext(), "取得失敗", Toast.LENGTH_SHORT).show();
+					return false;
 				}
-                return null;
+			}
+			protected void onPostExecute(Boolean result){
+				if(result)
+					mentionFinish(list, arrayList);
 			}
 		};
 		task.execute();
-		Thread.sleep(2000);
+	}
+	
+	private void mentionFinish(ListView list, ArrayList<String> arrayList){
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
 		list.setAdapter(adapter);
 	}
