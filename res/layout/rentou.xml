@@ -90,21 +90,31 @@
         android:onClick="back"
         android:text="戻る" />
 
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button1" >
-    </ListView>
-
-    <Button
-        android:id="@+id/button3"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/listView1"
-        android:layout_alignLeft="@+id/textView3"
-        android:onClick="mention"
-        android:text="メンション取得" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button1"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#c9f999"
+            android:layout_weight="1" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/listView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f9c9c9"
+            android:layout_weight="1" >
+        </ListView>
+
+    </LinearLayout>
 
 </RelativeLayout>

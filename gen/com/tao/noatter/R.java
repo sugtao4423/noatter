@@ -30,11 +30,11 @@ public final class R {
     public static final class id {
         public static final int button1=0x7f0a0005;
         public static final int button2=0x7f0a0008;
-        public static final int button3=0x7f0a0009;
         public static final int editText1=0x7f0a0000;
         public static final int editText2=0x7f0a0003;
         public static final int editText3=0x7f0a0007;
-        public static final int listView1=0x7f0a000a;
+        public static final int listView1=0x7f0a0009;
+        public static final int listView2=0x7f0a000a;
         public static final int oauth=0x7f0a000c;
         public static final int setting=0x7f0a000d;
         public static final int spinner1=0x7f0a0004;

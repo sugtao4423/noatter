@@ -55,9 +55,9 @@ public class OAuth extends Activity{
         	CustomCS = CS.getText().toString();
         	pref.edit().putString("CustomCK", CustomCK).putString("CustomCS", CustomCS).commit();
         }
-    	AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>(){
+    	AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
 			@Override
-			protected Void doInBackground(String... params) {
+			protected Void doInBackground(Void... params) {
 				ConfigurationBuilder builder = new ConfigurationBuilder();
 				builder.setOAuthConsumerKey(CustomCK)
 				.setOAuthConsumerSecret(CustomCS);
@@ -79,9 +79,9 @@ public class OAuth extends Activity{
     }
     
     public void pin(View v){
-    	AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>(){
+    	AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
 			@Override
-			protected Void doInBackground(String... params) {
+			protected Void doInBackground(Void... params) {
     	try{
     	AccessToken accessToken = twitter.getOAuthAccessToken(rt, pin.getText().toString());
     	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
