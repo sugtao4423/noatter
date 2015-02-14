@@ -1,6 +1,5 @@
 package com.tao.noatter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.Paging;
@@ -27,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -40,7 +38,7 @@ public class MainActivity extends Activity {
 	static List<Status> mentions;
 	static String text, CK, CS, MyScreenName;
 	static SharedPreferences pref;
-	static ArrayAdapter<String> HomeAdapter, MentionAdapter;
+	static CustomAdapter HomeAdapter, MentionAdapter;
 	
 	static Twitter twitter;
 	static TwitterFactory twitterFactory;
@@ -154,19 +152,22 @@ public class MainActivity extends Activity {
 	public void TimeLine() throws InterruptedException{
 		final ListView HomeList = (ListView)findViewById(R.id.listView1);
 		final ListView MentionList = (ListView)findViewById(R.id.listView2);
-		final ArrayList<String> HomeArrayList = new ArrayList<String>();
-		final ArrayList<String> MentionArrayList = new ArrayList<String>();
+		final int count = Integer.valueOf(pref.getString("TimeLineCount", "50"));
+		HomeAdapter = new CustomAdapter(this);
+		MentionAdapter = new CustomAdapter(this);
+		
 		AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>(){
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				try{
-				Paging paging = new Paging(1, 50);
+				Paging paging = new Paging(1, count);
 				ResponseList<twitter4j.Status> home = twitter.getUserTimeline(MyScreenName.substring(1), paging);
 				ResponseList<twitter4j.Status> mention = twitter.getMentionsTimeline(paging);
-                for (twitter4j.Status status : home)
-                	HomeArrayList.add(status.getText());
+                for (twitter4j.Status status : home){
+                	HomeAdapter.add(status);
+                }
                 for (twitter4j.Status status : mention)
-                    MentionArrayList.add("@" + status.getUser().getScreenName() + " : " + status.getText());
+                    MentionAdapter.add(status);
                 return true;
                 }catch(Exception e){
 					showToast("取得失敗");
@@ -175,30 +176,13 @@ public class MainActivity extends Activity {
 			}
 			protected void onPostExecute(Boolean result){
 				if(result){
-					HomeFinish(HomeList, HomeArrayList);
-					MentionFinish(MentionList, MentionArrayList);
+					background(HomeList);
+					HomeList.setAdapter(HomeAdapter);
+					MentionList.setAdapter(MentionAdapter);
 				}
 			}
 		};
 		task.execute();
-	}
-	//AsyncTask内での「this」が実行できないため別スレッドに分ける
-	private void HomeFinish(ListView list, ArrayList<String> arrayList){
-		HomeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-		list.setAdapter(HomeAdapter);
-		background(list);
-	}
-	private void MentionFinish(ListView list, ArrayList<String> arrayList){
-		MentionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-		list.setAdapter(MentionAdapter);
-		background(list);
-	}
-	
-	public void HomeListViewadd(String text){
-		HomeAdapter.insert(text, 0);
-	}
-	public void MentionListViewadd(String text){
-		MentionAdapter.insert(text, 0);
 	}
 	
 	public void Streaming(){
@@ -212,14 +196,14 @@ public class MainActivity extends Activity {
 				if(status.getUser().getScreenName().equals(MyScreenName.substring(1))){
 					handler.post(new Runnable(){
 						public void run(){
-							HomeListViewadd(status.getText());
+							HomeAdapter.insert(status, 0);
 						}
 					});
 				}
 				if(status.getText().matches(".*" + MyScreenName + ".*")){
 					handler.post(new Runnable(){
 						public void run(){
-							MentionListViewadd("@" + status.getUser().getScreenName() + " : " + status.getText());
+							MentionAdapter.insert(status, 0);
 						}
 					});
 				}

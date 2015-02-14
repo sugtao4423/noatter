@@ -1,7 +1,5 @@
 package com.tao.noatter;
 
-import java.util.ArrayList;
-
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.TwitterStream;
@@ -17,7 +15,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,8 +22,9 @@ import android.widget.Toast;
 public class rentou extends Activity {
 	
 	static EditText text, min, max;
-	static ArrayAdapter<String> HomeAdapter, MentionAdapter;
+	static CustomAdapter HomeAdapter, MentionAdapter;
 	static TwitterStream stream;
+	static SharedPreferences pref;
 	
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -35,6 +33,7 @@ public class rentou extends Activity {
 		text = (EditText)findViewById(R.id.editText1);
 		min = (EditText)findViewById(R.id.editText2);
 		max = (EditText)findViewById(R.id.editText3);
+		pref = PreferenceManager.getDefaultSharedPreferences(this);
 		try{
 		TimeLine();
 		Streaming();
@@ -45,7 +44,6 @@ public class rentou extends Activity {
 	
 	public void onResume(){
 		super.onResume();
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		//デフォルト有効
 		if(pref.getBoolean("enable_default", false)){
 			text.setText(pref.getString("rentou_letter", ""));
@@ -76,19 +74,22 @@ public class rentou extends Activity {
 	public void TimeLine() throws InterruptedException{
 		final ListView HomeList = (ListView)findViewById(R.id.listView1);
 		final ListView MentionList = (ListView)findViewById(R.id.listView2);
-		final ArrayList<String> HomeArrayList = new ArrayList<String>();
-		final ArrayList<String> MentionArrayList = new ArrayList<String>();
+		final int count = Integer.valueOf(pref.getString("TimeLineCount", "50"));
+		
+		HomeAdapter = new CustomAdapter(this);
+		MentionAdapter = new CustomAdapter(this);
+		
 		AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>(){
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				try{
-				Paging paging = new Paging(1, 50);
+				Paging paging = new Paging(1, count);
 				ResponseList<twitter4j.Status> home = MainActivity.twitter.getUserTimeline(MainActivity.MyScreenName.substring(1), paging);
 				ResponseList<twitter4j.Status> mention = MainActivity.twitter.getMentionsTimeline(paging);
 				for (twitter4j.Status status : home)
-					HomeArrayList.add(status.getText());
+					HomeAdapter.add(status);
                 for (twitter4j.Status status : mention)
-                    MentionArrayList.add("@" + status.getUser().getScreenName() + " : " + status.getText());
+                    MentionAdapter.add(status);
                 return true;
 				}catch(Exception e){
 					Toast.makeText(getApplicationContext(), "取得失敗", Toast.LENGTH_SHORT).show();
@@ -97,30 +98,13 @@ public class rentou extends Activity {
 			}
 			protected void onPostExecute(Boolean result){
 				if(result){
-					HomeFinish(HomeList, HomeArrayList);
-					MentionFinish(MentionList, MentionArrayList);
+					background(HomeList);
+					HomeList.setAdapter(HomeAdapter);
+					MentionList.setAdapter(MentionAdapter);
 				}
 			}
 		};
 		task.execute();
-	}
-	
-	private void HomeFinish(ListView list, ArrayList<String> arrayList){
-		HomeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-		list.setAdapter(HomeAdapter);
-		background(list);
-	}
-	private void MentionFinish(ListView list, ArrayList<String> arrayList){
-		MentionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-		list.setAdapter(MentionAdapter);
-		background(list);
-	}
-	
-	public void HomeListViewadd(String text){
-		HomeAdapter.insert(text, 0);
-	}
-	public void MentionListViewadd(String text){
-		MentionAdapter.insert(text, 0);
 	}
 	
 	public void Streaming(){
@@ -132,14 +116,14 @@ public class rentou extends Activity {
 				if(status.getUser().getScreenName().equals(MainActivity.MyScreenName.substring(1))){
 					handler.post(new Runnable(){
 						public void run(){
-							HomeListViewadd(status.getText());
+							HomeAdapter.insert(status, 0);
 						}
 					});
 				}
 				if(status.getText().matches(".*" + MainActivity.MyScreenName + ".*")){
 					handler.post(new Runnable(){
 						public void run(){
-							MentionListViewadd("@" + status.getUser().getScreenName() + " : " + status.getText());
+							MentionAdapter.insert(status, 0);
 						}
 					});
 				}
