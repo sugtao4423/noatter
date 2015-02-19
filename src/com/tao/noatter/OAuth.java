@@ -79,22 +79,28 @@ public class OAuth extends Activity{
     }
     
     public void pin(View v){
-    	AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+    	AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>(){
 			@Override
-			protected Void doInBackground(Void... params) {
-    	try{
-    	AccessToken accessToken = twitter.getOAuthAccessToken(rt, pin.getText().toString());
-    	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    	pref.edit().putString("AccessToken", accessToken.getToken())
-    	.putString("AccessTokenSecret", accessToken.getTokenSecret()).commit();
-    	finish();
-    	}catch(Exception e){
-    		Toast.makeText(getApplicationContext(), "おかしい", Toast.LENGTH_SHORT).show();
-    	}
-    	return null;
-		}
-    };
-    task.execute();
+			protected Boolean doInBackground(Void... params) {
+				try{
+					AccessToken accessToken = twitter.getOAuthAccessToken(rt, pin.getText().toString());
+					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+					pref.edit().putString("AccessToken", accessToken.getToken())
+					.putString("AccessTokenSecret", accessToken.getTokenSecret()).commit();
+					return true;
+				}catch(Exception e){
+					Toast.makeText(getApplicationContext(), "おかしい", Toast.LENGTH_SHORT).show();
+					return false;
+				}
+			}
+			protected void onPostExecute(Boolean result){
+				if(result){
+					startActivity(new Intent(getApplicationContext(), MainActivity.class));
+					finish();
+				}
+			}
+    	};
+    	task.execute();
     }
     
     

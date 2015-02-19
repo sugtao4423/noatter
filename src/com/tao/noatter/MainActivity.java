@@ -14,7 +14,10 @@ import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -22,9 +25,11 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -36,7 +41,7 @@ public class MainActivity extends Activity {
 	static EditText sousin_saki, kougeki_saki, backLetter;
 	static Spinner spinner;
 	static List<Status> mentions;
-	static String text, CK, CS, MyScreenName;
+	static String CK, CS, MyScreenName;
 	static SharedPreferences pref;
 	static CustomAdapter HomeAdapter, MentionAdapter;
 	
@@ -57,9 +62,10 @@ public class MainActivity extends Activity {
 		spinner = (Spinner)findViewById(R.id.spinner1);
 		pref = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		if(pref.getString("AccessToken", "").equals(""))
+		if(pref.getString("AccessToken", "").equals("")){
 			startActivity(new Intent(this, OAuth.class));
-		else{
+			finish();
+		}else{
 			accessToken = new AccessToken(pref.getString("AccessToken", "")
 					, pref.getString("AccessTokenSecret", ""));
 			if(pref.getString("CustomCK", "").equals("")){
@@ -120,13 +126,12 @@ public class MainActivity extends Activity {
 	}
 	
 	public void sousin(View v){
-		text = sousin_saki.getText().toString() + " " + spinner.getSelectedItem().toString()
-				+ " " + kougeki_saki.getText().toString() + " " + backLetter.getText().toString();
-		tweet();
+		tweet(sousin_saki.getText().toString() + " " + spinner.getSelectedItem().toString()
+				+ " " + kougeki_saki.getText().toString() + " " + backLetter.getText().toString());
 		background(v);
 	}
 	
-	public void tweet() {
+	public void tweet(String text) {
         AsyncTask<String, Void, Boolean> task = new AsyncTask<String, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(String... params) {
@@ -200,7 +205,7 @@ public class MainActivity extends Activity {
 						}
 					});
 				}
-				if(status.getText().matches(".*" + MyScreenName + ".*")){
+				if(status.getText().matches(".*" + MyScreenName + ".*") || status.getText().startsWith(MyScreenName)){
 					handler.post(new Runnable(){
 						public void run(){
 							MentionAdapter.insert(status, 0);
@@ -218,8 +223,45 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	public void rentou(View v){
-		startActivity(new Intent(this, rentou.class));
+	public void rentou(final View v){
+		LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.rentou_dialog, (ViewGroup)findViewById(R.id.custom_rentou_dialog));
+		final EditText text = (EditText)layout.findViewById(R.id.editText1);
+		final EditText min = (EditText)layout.findViewById(R.id.editText2);
+		final EditText max = (EditText)layout.findViewById(R.id.editText3);
+		
+		if(pref.getBoolean("enable_default", false)){
+			text.setText(pref.getString("rentou_letter", ""));
+			min.setText(pref.getString("rentou_min", ""));
+			max.setText(pref.getString("rentou_max", ""));
+		}else{
+			text.setText("@sarasty_noah attack @");
+			min.setHint("1");
+			max.setHint("10");
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		.setTitle("連投")
+		.setView(layout)
+		.setPositiveButton("開始", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				try{
+				String Text = text.getText().toString();
+				int Min = Integer.valueOf(min.getText().toString());
+				int Max = Integer.valueOf(max.getText().toString());
+				for( ; Min <= Max; Min++)
+					tweet(Text + " " + Min);
+				}catch(Exception e){
+					Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+		builder.setNegativeButton("キャンセル", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		builder.create().show();
 	}
 	
 	public void background(View v){
@@ -233,7 +275,16 @@ public class MainActivity extends Activity {
     
     public void onDestroy(){
     	super.onDestroy();
-    	stream.shutdown();
+    	AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				if(stream != null)
+					stream.shutdown();
+				return null;
+			}	
+    	};
+    	task.execute();
     }
 
 	@Override

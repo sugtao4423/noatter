@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tao.noatter"
-    android:versionCode="3"
-    android:versionName="2.1" >
+    android:versionCode="4"
+    android:versionName="3.0" >
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -24,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="rentou" android:screenOrientation="portrait"></activity>
         <activity android:name="OAuth" android:label="OAuth認証" android:screenOrientation="portrait"></activity>
         <activity android:name="Preferences" android:label="設定" android:screenOrientation="portrait"></activity>
     </application>

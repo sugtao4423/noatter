@@ -30,6 +30,7 @@ public final class R {
     public static final class id {
         public static final int button1=0x7f0a0005;
         public static final int button2=0x7f0a0008;
+        public static final int custom_rentou_dialog=0x7f0a000f;
         public static final int editText1=0x7f0a0000;
         public static final int editText2=0x7f0a0003;
         public static final int editText3=0x7f0a0007;
@@ -37,8 +38,8 @@ public final class R {
         public static final int listView1=0x7f0a0009;
         public static final int listView2=0x7f0a000a;
         public static final int name_screenName=0x7f0a000c;
-        public static final int oauth=0x7f0a000f;
-        public static final int setting=0x7f0a0010;
+        public static final int oauth=0x7f0a0010;
+        public static final int setting=0x7f0a0011;
         public static final int spinner1=0x7f0a0004;
         public static final int textView1=0x7f0a0001;
         public static final int textView2=0x7f0a0002;
@@ -50,7 +51,7 @@ public final class R {
         public static final int activity_main=0x7f030000;
         public static final int list_item_tweet=0x7f030001;
         public static final int oauth=0x7f030002;
-        public static final int rentou=0x7f030003;
+        public static final int rentou_dialog=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f090000;
